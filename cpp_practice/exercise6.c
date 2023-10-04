@@ -23,6 +23,7 @@ int main()
     // 2^3 = 8;
     // 2^4 = 16;
     // 2^5 = 32;
+    // 2^6 =
 
     printf("logical shift of n=%d i.e. %d >> %d is: %d\n", n, n, shifter, n >> shifter);
 
