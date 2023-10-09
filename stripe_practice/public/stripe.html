@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stripe Payments</title>
+    <!-- Includes Stripe.js library -->
+    <script src="https://js.stripe.com/v3/"></script>
+  </head>
+  <body>
+    <h1>Stripe Payment Example</h1>
+    <form id="payment-form">
+      <div id="card-element"></div>
+      <button type="button" id="submit">Pay</button>
+    </form>
+
+    <script>
+      // set publishable key from stripe dashboard
+      const stripe = Stripe("Stripe_publishable_key");
+
+      // create an instance of elems
+      const elements = stripe.elements();
+
+      // create an instance of the card element
+      const card = elements.create("card");
+
+      // add an instance of the card element into the card-elem div
+      card.mount("#card-element");
+
+      // payment form
+      const form = document.getElementById("payment-form");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        // this creates payment intent as soon as form is submitted
+        const { token, error } = await stripe.createToken(card);
+
+        if (error) {
+          console.error(error);
+        } else {
+          fetch("/create-payment-intent", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ items: [{ id: "item " }] }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              const clientSecret = data.clientSecret;
+
+              // uses stripe to confirm paymentintent result
+              stripe
+                .confirmCardPayment(clientSecret, {
+                  payment_method: {
+                    card: card,
+                  },
+                })
+                .then((result) => {
+                  if (result.error) {
+                    console.error(result.error.message);
+                  } else {
+                    // successful payment
+                    if (result.paymentIntent.status === "succeeded") {
+                      console.log("Payment Success");
+                    }
+                  }
+                });
+            });
+        }
+      });
+    </script>
+  </body>
+</html>
