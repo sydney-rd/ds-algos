@@ -1,4 +1,4 @@
-// hello world via Node
+// hello world via Node. Open-source server enviorment
 
 const http = require("http");
 
