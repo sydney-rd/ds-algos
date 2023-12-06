@@ -105,6 +105,7 @@
 //   return true;
 // }
 
+// this is for ints
 const input = 123219;
 
 function isPalindrome(input) {
@@ -113,6 +114,24 @@ function isPalindrome(input) {
   let j = input_string.length - 1;
   while (i < j) {
     if (input_string[i] != input_string[j]) {
+      return false;
+    }
+    i++;
+    j--;
+  }
+  return true;
+}
+
+console.log(isPalindrome(input));
+
+// this is for strings remove the to string function
+const input = "abcba";
+
+function isPalindrome(input) {
+  let i = 0;
+  let j = input.length - 1;
+  while (i < j) {
+    if (input[i] != input[j]) {
       return false;
     }
     i++;
